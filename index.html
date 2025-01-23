@@ -84,15 +84,17 @@ addButton.addEventListener('click', ()=>{
     taskDiv.append(checkBox)
     taskDiv.append(task)
     taskDiv.append(deleteButton)
-    }
-    checkBox.addEventListener('input', ()=>{
+
+     checkBox.addEventListener('input', ()=>{
         if(checkBox.checked){
             task.style.textDecoration = 'line-through'
         }else{
             task.style.textDecoration = 'none'
         }
         
-    })
+    })   
+    }
+    
 
 })
     </script>
