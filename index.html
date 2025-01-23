@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>to-do list app</title>
     <style>
         *{
             margin: 0;
@@ -66,7 +66,12 @@ const input = document.querySelector('input')
 const addButton = document.querySelector('button')
 
 addButton.addEventListener('click', ()=>{
-    const body = document.body
+
+    if(input.value == ''){
+        alert('You must enter a task in the input first')
+    }
+    else{
+        const body = document.body
     const taskDiv = document.createElement('div')
     taskDiv.classList.add('task-div')
     const checkBox = document.createElement('input')
@@ -79,6 +84,8 @@ addButton.addEventListener('click', ()=>{
     taskDiv.append(checkBox)
     taskDiv.append(task)
     taskDiv.append(deleteButton)
+    }
+    
 
 })
     </script>
