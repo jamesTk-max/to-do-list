@@ -85,44 +85,88 @@
       <input type="text" name="" id=""><button>Add</button>
     </div>
     <script>
+
 const input = document.querySelector('input')
 const addButton = document.querySelector('button')
+const body = document.body;
 
-addButton.addEventListener('click', ()=>{
+// Function to save tasks to localStorage
+function saveTasks(tasks) {
+    localStorage.setItem('data', JSON.stringify(tasks));
+}
 
-    if(input.value == ''){
-        alert('You must enter a task in the input first')
+// Function to get tasks from localStorage
+function getTasks() {
+    return JSON.parse(localStorage.getItem('data') || '[]');
+}
+
+// Function to create a task element
+function createTaskElement(taskText, isChecked) {
+    const taskDiv = document.createElement('div');
+    taskDiv.classList.add('task-div');
+
+    const checkBox = document.createElement('input');
+    checkBox.type = 'checkbox';
+    checkBox.checked = isChecked;
+
+    const task = document.createElement('p');
+    task.textContent = taskText;
+    if (isChecked) {
+        task.style.textDecoration = 'line-through';
     }
-    else{
-        const body = document.body
-    const taskDiv = document.createElement('div')
-    taskDiv.classList.add('task-div')
-    const checkBox = document.createElement('input')
-    checkBox.type = 'checkbox'
-    const task = document.createElement('p')
-    task.innerHTML = input.value
-    const deleteButton = document.createElement('button')
-    deleteButton.innerHTML = 'delete'
-    body.append(taskDiv)
-    taskDiv.append(checkBox)
-    taskDiv.append(task)
-    taskDiv.append(deleteButton)
-    input.value = ''
-     checkBox.addEventListener('input', ()=>{
-        if(checkBox.checked){
-            task.style.textDecoration = 'line-through'
-        }else{
-            task.style.textDecoration = 'none'
-        }
-        
-    }) 
-        deleteButton.addEventListener('click', ()=>{
-            taskDiv.remove()
-        })
-    }
-    
 
-})
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'delete';
+
+    // Event to mark as complete
+    checkBox.addEventListener('input', () => {
+        task.style.textDecoration = checkBox.checked ? 'line-through' : 'none';
+
+        let tasks = getTasks();
+        tasks = tasks.map(t => (t.pData === taskText ? { ...t, checkBoxData: checkBox.checked } : t));
+        saveTasks(tasks);
+    });
+
+    // Event to delete task
+    deleteButton.addEventListener('click', () => {
+        taskDiv.remove();
+
+        let tasks = getTasks();
+        tasks = tasks.filter(t => t.pData !== taskText);
+        saveTasks(tasks);
+    });
+
+    taskDiv.append(checkBox, task, deleteButton);
+    return taskDiv;
+}
+
+// Load tasks on page load
+window.addEventListener('load', () => {
+    const savedTasks = getTasks();
+    savedTasks.forEach(task => {
+        const taskElement = createTaskElement(task.pData, task.checkBoxData);
+        body.append(taskElement);
+    });
+});
+
+// Add new task
+addButton.addEventListener('click', () => {
+    if (input.value === '') {
+        alert('You must enter a task in the input first');
+        return;
+    }
+
+    const newTaskText = input.value;
+    const newTaskElement = createTaskElement(newTaskText, false);
+    body.append(newTaskElement);
+
+    let tasks = getTasks();
+    tasks.push({ checkBoxData: false, pData: newTaskText });
+    saveTasks(tasks);
+
+    input.value = '';
+});
+
     </script>
-</body>
-</html>
+    </body>
+    </html>
